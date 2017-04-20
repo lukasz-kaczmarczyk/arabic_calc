@@ -1,3 +1,10 @@
+/*
+issues: 'M' not added
+to do:
+V,L,D handling
+reverse computing result
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,12 +14,14 @@ const char ROMAN[] = {'M','D','C','L','X','V','I'};
 #define SIZE_BUFFER 20
 #define ROMAN_QUANTITY 7
 
+char tmp[20] = "MMCCCXIIII";
+
 char buffer1[SIZE_BUFFER];
 char buffer2[SIZE_BUFFER];
 char l1[] = "CCCLVII"; //357 CCC
 
 char l2[] = "CLII"; //152        DIX
-char tmp[20] = " ";
+
 
 void modify(char *value, char *buffer);
 void concatenate(char *val1, char *val2);
@@ -21,7 +30,7 @@ void compute(char *in);
 
 int main(int argc, char *argv[]) {
    
-   tmp[0] = 'C';
+   /*
     printf("l1: %s\n", l1);
     printf("l2: %s\n", l2);
     modify(l1, buffer1);
@@ -33,6 +42,7 @@ int main(int argc, char *argv[]) {
    
     sort(buffer1);
     printf("after sort %s\n", buffer1);
+    */
    
     compute(tmp);
     printf("after sum operation: %s\n", tmp);
@@ -151,103 +161,107 @@ void sort(char *in)
 }
 
 
-void compute(char *in) {
-    char res[20] = {0};
-    int found = 0;
-    char *it = in, *it_res = res;
-    int i = 6, j = 1, k = 0, count = 1; //count -1 becouse it helps if not found
-   
-    for (;'\0' != *it; ++it)            //go to the last symbol
-        ++j;
-    --it;
-   
-    //printf("----*it: %c\n ", *it);
-   
-    while (i >= 0) {
+void compute(char * const in) {
+	char res[20] = {0};
+	int found = 0;
+	char *it = in, *it_res = res;
+	int i = 6, j = 1, k = 0, count = 0; //count -1 becouse it helps if not found
+	  
+
+	   
+	    //printf("----*it: %c\n ", *it);
+	
+	while (i >= 0) {
+		
+		for (;'\0' != *it; ++it);            //go to the last symbol        
+		--it;
+	
        
-        while ((ROMAN[i] != *it)&&(it != in)) {		//find symbol in number
-        	--it;
-	}  
-//-------------------------------------------------------
-	if(ROMAN[i] == *it) {       
+        	while ((ROMAN[i] != *it)&&(it != in)) {		//find symbol in number
+        	
+        		--it;
+        		printf("while ((ROMAN[i] != *it)&&(it != in)) \n");
+		}  
+		
+		if (ROMAN[i] == *it)				//found symbol
+		{
+			++count;
+			printf("-------found: %c\n", *it);
+		}
+			//++count;
+//-------------------------------------------------------       
     		printf("====found -> ROMAN[i]: %c, i: %d, *it: %c\n", ROMAN[i], i, *it);
    
-    do {    //count the same symbol
-        count += 1;
-        --it;
-        printf("count: %d\n", count);
-       //printf("*it: %c, *it-1: %c, count: %d \n", *it, *(it-1), count);
+    		while (*it == *(it-1)) {    			//count the same symbol
+        		count += 1;
+        		--it;
+        		printf("count: %d\n", count);
+              
+        		if (it == in) {           //break if it first symbol
+        			printf("!!!it == in, break\n");
+            			break;
+            		}
+       			printf("not break in counting\n");
+    		}         //the last segmentation fault???
        
-        if (it == in)            //break if it first symbol
-        	printf("!!!it == in, break\n");
-            
-       printf("not break in counting\n");
-    } while (*it == *(it-1));         //the last segmentation fault???
        
-       
-        printf("count: %d of symbol: %c\n", count, *it);                        //put in reverse way
-    if (!(i%2) && (i > 0)) {
+        	printf("count: %d of symbol: %c\n", count, ROMAN[i]);                        //put in reverse way
+    		if (!(i%2) && (i > 0)) {
     	
-        switch (count) {
-            case 4:                    //put VI or LX or DC
-                *it_res = ROMAN[i-1];
-                ++it_res;
-                *it_res = ROMAN[i];
-                ++it_res;
-            break;
-            case 5:                    //put V or L or D
-                *it_res = ROMAN[i-1];
-                ++it_res;   
-            break;
-            case 6:                    //put IV or XL or CD
-                *it_res = ROMAN[i];
-                ++it_res;
-                *it_res = ROMAN[i-1];
-                ++it_res;
-            break;
-            case 7:                    //put IIV or XXL or CCD
-                *it_res = ROMAN[i];
-                ++it_res;
-                *it_res = ROMAN[i];
-                ++it_res;
-                *it_res = ROMAN[i-1];
-                ++it_res;
-               
-            break;
-            case 8:                    //put IIIV or XXXL or CCCD
-                *it_res = ROMAN[i];
-                ++it_res;
-                *it_res = ROMAN[i];
-                ++it_res;
-                *it_res = ROMAN[i];
-                ++it_res;
-                *it_res = ROMAN[i-1];
-                ++it_res;
-            break;
-            case 9:
-                //NOT POSSIBLE?
-            break;
-           
-            default:                //single, double or triple symbol
-                for (k = 0; k < count; ++k) {
-                    *it_res = ROMAN[i];
-                    printf("default statement\n");
-                    ++it_res;   
-                }
+        	switch (count) {
+		        case 4:                    //put VI or LX or DC
+		        	*it_res = ROMAN[i-1];
+		                ++it_res;
+		                *it_res = ROMAN[i];
+		                ++it_res;
+		        break;
+		        case 5:                    //put V or L or D
+		                *it_res = ROMAN[i-1];
+		                ++it_res;   
+		        break;
+		        case 6:                    //put IV or XL or CD
+		                *it_res = ROMAN[i];
+		                ++it_res;
+		                *it_res = ROMAN[i-1];
+		                ++it_res;
+		        break;
+		        case 7:                    //put IIV or XXL or CCD
+		                *it_res = ROMAN[i];
+		                ++it_res;
+		                *it_res = ROMAN[i];
+		                ++it_res;
+		                *it_res = ROMAN[i-1];
+		                ++it_res;
+		               
+		        break;
+		        case 8:                    //put IIIV or XXXL or CCCD
+		                *it_res = ROMAN[i];
+		                ++it_res;
+		                *it_res = ROMAN[i];
+		                ++it_res;
+		                *it_res = ROMAN[i];
+		                ++it_res;
+		                *it_res = ROMAN[i-1];
+		                ++it_res;
+		        break;
+		        case 9:
+		                //NOT POSSIBLE?
+		        break;
+		           
+		        default:                //single, double or triple symbol
+		                for (k = 0; k < count; ++k) {
+		                	*it_res = ROMAN[i];
+		                	printf("default statement\n");
+		                	++it_res;   
+		                }
+		        }
+		}
+		--i;
+		it = in;
+		count = 0;
                
         }
-}
-
-		
 	
-	
-}
-
-   --i;
-   count = 1;
-   printf("next loop\n");
-}
-	printf("outside of loop\n");
-
-    memcpy(in,res, 20);
+	printf("next loop\n");
+	memcpy(in,res, 20);
 }

@@ -117,7 +117,7 @@ void modify(char *value, char *buffer)
         }
         ++i;
        
-    } 
+    }
    
     //buffer[k] = '0';
    
@@ -255,7 +255,22 @@ void compute(char * const in) {
 		                	++it_res;   
 		                }
 		        }
-		}
+		} else if ((i%2) && i > 0) {			//V L D handling, to improve
+			
+			if (2 == count) {
+				it_res = ROMAN[i-1];
+				++it_res;
+			} else {
+				*it_res = ROMAN[i];
+		               	++it_res;   
+			}
+			
+		} else if (0 == i) {				//M handling
+			for (k = 0; k < count; ++k) {
+		               	*it_res = ROMAN[i];
+		               	++it_res;   
+		        }
+		}				
 		--i;
 		it = in;
 		count = 0;

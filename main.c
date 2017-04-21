@@ -12,7 +12,7 @@ algorithm:
 #include <string.h>
 #define SIZE_BUFFER 20
 #define ROMAN_QUANTITY 7
-#define NR_OF_DATA	4
+#define NR_OF_DATA	5
 
 const char ROMAN[] = {'M','D','C','L','X','V','I'};
 char tmp[SIZE_BUFFER] = "MMMLL ";
@@ -27,13 +27,13 @@ char *l2 = "CLII";
 char *l3 = "I";
 char *l4 = "I"; 
 
-char l5[] = "V";
-char l6[] = "V"; 
+char l5[] = "MC";
+char l6[] = "MCCCCV"; 
 
 char l7[] = "V";
 char l8[] = "X"; 
 
-char l9[] = "IV";
+char l9[] = "V";
 char l10[] = "IX"; 
 
 
@@ -63,6 +63,10 @@ int main(int argc, char *argv[]) {
    	data[0][3] = l7;
    	data[1][3] = l8;
    	
+   	//data set 5
+   	data[0][4] = l9;
+   	data[1][4] = l10;
+   	
    	int i;
    	for (i = 0; i < NR_OF_DATA; i++) {
    		printf("number 1: %s\n", data[0][i]);
@@ -80,23 +84,9 @@ int main(int argc, char *argv[]) {
 		memset(buffer2,0,strlen(buffer2));
    		
 	}
+	
 
 	
-	/*
-	   	printf("number 1: %s\n", data[0][3]);
-		printf("number 2: %s\n", data[1][3]);
-		
-		modify(data[0][3], buffer1);
-		modify(data[1][3], buffer2);
-		
-		concatenate(buffer1, buffer2);
-		sort(buffer1);	  
-		printf("after sort operation: %s\n", buffer1); 
-		compute(buffer1);
-		
-		printf(" %s + %s = %s\n\n", data[0][3], data[1][3], buffer1);
-
-	*/
 
 
 	return 0;
@@ -246,17 +236,31 @@ void compute(char * const in) {
     		}   
        
        
-    		if (!(i%2) && (i > 0)) {			//I, X, C handling
+    		if (!(i%2) && (i > 0)) {					//I, X, C handling
 	        	switch (count) {
 			        case 4:                    	
 			        
 			        	if (ROMAN[i-1] == *(it-1)) {		//put XI or CX or MC	
-			                	*it_res = ROMAN[i-2];
-			                	++it_res;
-			                	*it_res = ROMAN[i];
-			                	++it_res;
-			                	--it;
-			                	*it = ' ';
+			        		if (ROMAN[i-1] == *(it-2)) {
+			        			*it_res = ROMAN[i-1];
+			                		++it_res;
+							*it_res = ROMAN[i];
+			                		++it_res;		
+			                		*it_res = ROMAN[i-2];
+			                		++it_res;
+			                		
+			                		*it = ' ';
+			                		*(it-1) = ' ';
+			                		*(it-2) = ' ';
+			        		} else {
+			        			*it_res = ROMAN[i-2];
+			                		++it_res;
+			                		*it_res = ROMAN[i];
+			                		++it_res;
+			                		--it;
+			                		*it = ' ';
+						}
+
 			                	
 			                	
 					} else {				
@@ -297,8 +301,15 @@ void compute(char * const in) {
 			                ++it_res;
 			                *it_res = ROMAN[i];
 			                ++it_res;
-			                *it_res = ROMAN[i-1];
+			                if (ROMAN[i-1] == *(it-1)) {
+			                	*it_res = ROMAN[i-2];
+						*(it-1) = ' ';	
+					} else {
+						*it_res = ROMAN[i-1];
+					}
+			                
 			                ++it_res;
+			                --it;
 			        break;
 
 			        default:                	//single, double or triple symbol
@@ -326,7 +337,6 @@ void compute(char * const in) {
 		--i;
 		
 		
-		//it = in;
 		count = 0;
                
         }

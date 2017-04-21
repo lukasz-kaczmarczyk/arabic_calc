@@ -1,8 +1,10 @@
 /*
-issues: 'M' not added
-to do:
-V,L,D handling
-reverse computing result
+algorithm:
+1. modify num1
+2. modify num2
+3. concateanate num1 and num2
+4. sort
+5. compute result
 */
 
 #include <stdio.h>
@@ -14,7 +16,7 @@ const char ROMAN[] = {'M','D','C','L','X','V','I'};
 #define SIZE_BUFFER 20
 #define ROMAN_QUANTITY 7
 
-char tmp[20] = "MMCCCXIIII";
+char tmp[20] = "MMMLL ";
 
 char buffer1[SIZE_BUFFER];
 char buffer2[SIZE_BUFFER];
@@ -27,9 +29,9 @@ void modify(char *value, char *buffer);
 void concatenate(char *val1, char *val2);
 void sort(char *in);
 void compute(char *in);
+void rev(char *in);
 
 int main(int argc, char *argv[]) {
-   
    /*
     printf("l1: %s\n", l1);
     printf("l2: %s\n", l2);
@@ -45,7 +47,10 @@ int main(int argc, char *argv[]) {
     */
    
     compute(tmp);
-    printf("after sum operation: %s\n", tmp);
+    printf(" %s\n", tmp);;
+    
+    printf(": %s\n", tmp);
+    //printf("tmp[19]: %c\n", tmp[19]);
     return 0;
 }
 
@@ -190,7 +195,7 @@ void compute(char * const in) {
 		}
 			//++count;
 //-------------------------------------------------------       
-    		printf("====found -> ROMAN[i]: %c, i: %d, *it: %c\n", ROMAN[i], i, *it);
+    		//printf("====found -> ROMAN[i]: %c, i: %d, *it: %c\n", ROMAN[i], i, *it);
    
     		while (*it == *(it-1)) {    			//count the same symbol
         		count += 1;
@@ -258,9 +263,9 @@ void compute(char * const in) {
 		} else if ((i%2) && i > 0) {			//V L D handling, to improve
 			
 			if (2 == count) {
-				it_res = ROMAN[i-1];
+				*it_res = ROMAN[i-1];
 				++it_res;
-			} else {
+			} else if (1 == count){
 				*it_res = ROMAN[i];
 		               	++it_res;   
 			}
@@ -272,11 +277,38 @@ void compute(char * const in) {
 		        }
 		}				
 		--i;
+		
+		
 		it = in;
 		count = 0;
                
         }
-	
-	printf("next loop\n");
+	*it_res = ' ';						//last symbol: " "
+	rev(res);
 	memcpy(in,res, 20);
+}
+
+/*
+	last of character must be: " "!!!
+*/
+void rev(char *in) {
+	char *pos2 = in;
+	char *pos1 = in;
+	char tmp;
+	
+	while (' ' != *pos2) 			//find last symbol
+		++pos2;
+	--pos2;
+	
+	while (pos2 > pos1) {
+		tmp = *pos1;
+		*pos1 = *pos2;
+		*pos2 = tmp;
+		
+		++pos1;
+		--pos2;
+	}
+	
+	printf(": %s\n", in);
+	
 }
